@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:project1_mobdev_ahmad_917607485/Emergency/emergency_help_screen.dart';
+import 'package:project1_mobdev_ahmad_917607485/Meal/meal_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Other%20Help/other_help_screen.dart';
 
+import '../Calender/calender_screen.dart';
+import '../Camera/camera_screen.dart';
 import '../Login/login_screen.dart';
+import '../Near Me/near_me_screen.dart';
+import '../main.dart';
 
 class HomeScreen extends StatelessWidget {
   final String username;
@@ -13,49 +18,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.red, size: 50),
-        flexibleSpace: Container(
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: createButton('Logout', () {
-                  logout(context);
-                }, 100),
-              ),
-            ],
-          ),
-        ),
-        actions: const [
-          Text('Battery:'), //TODO battery monitoring
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[], //TODO hamburger menu
-        ),
-      ),
+      appBar: createAppBar(context),
+      drawer: createDrawer(context, username),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Text(
-                  'Hi, $username',
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 32,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          createUsernameSection(username),
           Row(
             children: [
               Padding(
@@ -104,13 +71,15 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(27, 0, 0, 40),
-                child: createButton(
-                    'Request Meal', () {}, 150), // Load meal screen
+                child: createButton('Request Meal', () {
+                  meal(context, username);
+                }, 150),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 0, 0, 40),
-                child: createButton(
-                    'Calender', () {}, 150), // Load calender screen
+                child: createButton('Calender', () {
+                  calender(context, username);
+                }, 150),
               ),
             ],
           ),
@@ -141,12 +110,15 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(27, 0, 0, 40),
-                child: createButton('Camera', () {}, 150), // Load camera screen
+                child: createButton('Camera', () {
+                  camera(context, username);
+                }, 150),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(52.5, 0, 0, 40),
-                child:
-                    createButton('Near Me', () {}, 150), // Load near me screen
+                child: createButton('Near Me', () {
+                  nearMe(context, username);
+                }, 150),
               ),
             ],
           ),
@@ -158,6 +130,46 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  void calender(BuildContext context, String username) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CalenderScreen(
+                username: username,
+              )),
+    );
+  }
+
+  void camera(BuildContext context, String username) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+                username: username,
+              )),
+    );
+  }
+
+  void nearMe(BuildContext context, String username) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => NearMeScreen(
+                username: username,
+              )),
+    );
+  }
+}
+
+void meal(BuildContext context, String username) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+        builder: (context) => MealScreen(
+              username: username,
+            )),
+  );
 }
 
 void otherHelp(BuildContext context, String username) {

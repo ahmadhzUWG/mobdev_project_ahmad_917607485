@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project1_mobdev_ahmad_917607485/Custom%20Widgets/battery.dart';
 
 import '../Home/home_screen.dart';
 
@@ -9,17 +10,13 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        actions: const [
+          BatteryMonitorWidget(),
+        ],
+      ),
       body: Column(children: [
-        Container(
-          alignment: Alignment.bottomRight,
-          height: 75,
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('Battery: NOT IMPLEMENTED'), //TODO battery monitoring
-            ],
-          ),
-        ),
         Column(
           children: [
             SizedBox(
