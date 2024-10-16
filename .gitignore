@@ -12,7 +12,7 @@ build/
 # Android related
 project1_mobdev_ahmad_917607485/android/local.properties
 project1_mobdev_ahmad_917607485/android/key.properties
-project1_mobdev_ahmad_917607485/android/gradle.properties
+project1_mobdev_ahmad_917607485/android/gradle
 **/*.keystore
 
 # iOS related
