@@ -1,0 +1,24 @@
+# Flutter related
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.DS_Store
+.idea/
+.metadata
+*.lock
+*.iml
+
+# Android related
+android/local.properties
+android/key.properties
+**/*.keystore
+
+# iOS related
+ios/Pods/
+ios/Flutter/.symlinks
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Environment variables
+.env
