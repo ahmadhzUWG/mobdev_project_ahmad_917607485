@@ -9,6 +9,7 @@ android {
     namespace = "com.example.project1_mobdev_ahmad_917607485"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+ 
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -28,6 +29,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        def googleMapsApiKey = project.hasProperty('GOOGLE_MAPS_API_KEY') ? project.GOOGLE_MAPS_API_KEY : ""
+        manifestPlaceholders = [googleMapsApiKey: googleMapsApiKey]
     }
 
     buildTypes {

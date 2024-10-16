@@ -10,15 +10,16 @@ build/
 *.iml
 
 # Android related
-android/local.properties
-android/key.properties
+/android/local.properties
+/android/key.properties
+/android/gradle.properties
 **/*.keystore
 
 # iOS related
-ios/Pods/
-ios/Flutter/.symlinks
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
+/ios/Pods/
+/ios/Flutter/.symlinks
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Flutter.podspec
 
 # Environment variables
 .env
