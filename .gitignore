@@ -1,0 +1,25 @@
+# Flutter related
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.DS_Store
+.idea/
+.metadata
+*.lock
+*.iml
+
+# Android related
+project1_mobdev_ahmad_917607485/android/local.properties
+project1_mobdev_ahmad_917607485/android/key.properties
+project1_mobdev_ahmad_917607485/android/gradle.properties
+**/*.keystore
+
+# iOS related
+project1_mobdev_ahmad_917607485/ios/Pods/
+project1_mobdev_ahmad_917607485/ios/Flutter/.symlinks
+project1_mobdev_ahmad_917607485/ios/Flutter/Flutter.framework
+project1_mobdev_ahmad_917607485/ios/Flutter/Flutter.podspec
+
+# Environment variables
+.env
