@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project1_mobdev_ahmad_917607485/Emergency/emergency_help_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Meal/meal_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Other%20Help/other_help_screen.dart';
 
+import '../Auth/auth_gate.dart';
 import '../Calender/calender_screen.dart';
 import '../Camera/camera_screen.dart';
 import '../Login/login_screen.dart';
@@ -192,10 +194,12 @@ void emergency(BuildContext context, String username) {
   );
 }
 
-void logout(BuildContext context) {
+void logout(BuildContext context) async {
+  await FirebaseAuth.instance.signOut();
+
   Navigator.pushAndRemoveUntil(
     context,
-    MaterialPageRoute(builder: (context) => const LoginScreen()),
+    MaterialPageRoute(builder: (context) => const AuthGate()),
     (route) => false,
   );
 }

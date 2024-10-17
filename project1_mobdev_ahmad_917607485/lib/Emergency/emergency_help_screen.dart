@@ -88,7 +88,7 @@ Container createTextBox(String text, double height, double width) {
 
 Text createUsernameText(String username) {
     return Text(
-                'Hi, $username',
+                username,
                 style: const TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: 32,

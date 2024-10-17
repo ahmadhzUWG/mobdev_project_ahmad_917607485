@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project1_mobdev_ahmad_917607485/Calender/calender_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Camera/camera_screen.dart';
@@ -5,13 +6,16 @@ import 'package:project1_mobdev_ahmad_917607485/Meal/meal_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Near%20Me/near_me_screen.dart';
 import 'package:project1_mobdev_ahmad_917607485/Other%20Help/other_help_screen.dart';
 
+import 'Auth/auth_gate.dart';
 import 'Custom Widgets/battery.dart';
 import 'Emergency/emergency_help_screen.dart';
 import 'Home/home_screen.dart';
 import 'Login/login_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure binding is initialized
+  await Firebase.initializeApp(); // Initialize Firebase
+  runApp(MyApp()); // Run your app
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LoginScreen(),
+      home: const AuthGate(),
     );
   }
 }

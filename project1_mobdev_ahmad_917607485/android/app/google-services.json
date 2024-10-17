@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571958404086",
+    "project_id": "mobiledevfall2024",
+    "storage_bucket": "mobiledevfall2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571958404086:android:6623bdd8f82c9382321dd7",
+        "android_client_info": {
+          "package_name": "com.ahmad.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkxJHT84XyCNcCoy27qGRLnuD11CK4PPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

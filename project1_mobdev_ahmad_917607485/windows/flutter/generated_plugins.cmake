@@ -5,6 +5,9 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   battery_plus
+  desktop_webview_auth
+  firebase_auth
+  firebase_core
   geolocator_windows
 )
 
