@@ -1,14 +1,21 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:project1_mobdev_ahmad_917607485/Emergency/emergency_help_screen.dart';
+import 'package:project1_mobdev_ahmad_917607485/Other%20Help/help_request.dart';
+import 'package:project1_mobdev_ahmad_917607485/Other%20Help/other_help_controller.dart';
 import 'package:project1_mobdev_ahmad_917607485/main.dart';
 
 import '../Home/home_screen.dart';
 import '../Login/login_screen.dart';
+import 'help_type.dart';
 
 class OtherHelpScreen extends StatelessWidget {
+  int helpCounter = 0;
   final String username;
+  final OtherHelpController _otherHelpController = OtherHelpController();
 
-  const OtherHelpScreen({super.key, required this.username});
+  OtherHelpScreen({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class OtherHelpScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     createTextBox('Feeding Help?', 150, 140),
-                    createButton('Request', () {}, 120)
+                    createButton('Request', () {showInputDialog(context, HelpType.feeding);}, 120)
                   ],
                 ),
               ),
@@ -35,7 +42,7 @@ class OtherHelpScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     createTextBox('Medicine Help?', 150, 150),
-                    createButton('Request', () {}, 120)
+                    createButton('Request', () {showInputDialog(context, HelpType.medical);}, 120)
                   ],
                 ),
               )
@@ -48,8 +55,8 @@ class OtherHelpScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 30),
                 child: Column(
                   children: [
-                    createTextBox('Restroom Help?', 140, 150),
-                    createButton('Request', () {}, 120)
+                    createTextBox('Other Help?', 140, 150),
+                    createButton('Request', () {showInputDialog(context, HelpType.other);}, 120)
                   ],
                 ),
               )
@@ -72,4 +79,47 @@ class OtherHelpScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> showInputDialog(BuildContext context, HelpType type) async {
+  TextEditingController controller = TextEditingController();
+
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,  
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        title: Text('Help'),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(hintText: 'Enter your request'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop(); 
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              String inputText = controller.text;
+              HelpRequest helpRequest = HelpRequest();
+              helpRequest.setId(helpCounter);
+              helpCounter++;
+              helpRequest.setDescription(inputText);
+              helpRequest.setType(type);
+              helpRequest.setTimestamp(DateTime.now());
+              HelpRequest loggedHelpRequest = await _otherHelpController.logHelpRequest(helpRequest);
+              log("Logged Help Request:\n\tId: ${loggedHelpRequest.id}\n\tDescription: ${loggedHelpRequest.description}\n\tType: ${loggedHelpRequest.type}\n\tTimestamp: ${loggedHelpRequest.timestamp.toIso8601String()}");
+              Navigator.of(dialogContext).pop(); 
+            },
+            child: Text('Send'),
+          ),
+          ],
+        );
+     },
+    );
+  }
 }
+
+

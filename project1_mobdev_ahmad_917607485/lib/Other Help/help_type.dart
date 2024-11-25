@@ -1,0 +1,1 @@
+enum HelpType {medical, feeding, other}

@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:project1_mobdev_ahmad_917607485/Login/login_screen.dart';
 
-import '../Emergency/emergency_help_screen.dart';
+
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:project1_mobdev_ahmad_917607485/Meal/meal_controller.dart';
+
 import '../Home/home_screen.dart';
 import '../main.dart';
-
-enum MealType { breakfast, lunch, dinner }
+import 'combo.dart';
+import 'meal.dart';
+import 'meal_type.dart';
 
 class MealScreen extends StatefulWidget {
   final String username;
@@ -17,6 +21,7 @@ class MealScreen extends StatefulWidget {
 }
 
 class MealScreenState extends State<MealScreen> {
+  final MealController _mealController = MealController();
   MealType currentMenu = MealType.lunch;
   List<bool> mealSelections = List.generate(3, (_) => false);
   List<Widget> mealTypes = <Widget>[
@@ -41,70 +46,98 @@ class MealScreenState extends State<MealScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: createAppBar(context),
-      drawer: createDrawer(context, widget.username),
-      body: Column(
-        children: [
-          createUsernameSection(widget.username),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ToggleButtons(
-                  isSelected: mealSelections,
-                  borderRadius: BorderRadius.circular(12),
-                  selectedBorderColor: Colors.red[900],
-                  borderWidth: 7,
-                  color: Colors.red,
-                  selectedColor: Colors.white,
-                  fillColor: Colors.red,
-                  constraints: const BoxConstraints(
-                    minHeight: 100,
-                    minWidth: 100,
-                  ),
-                  children: mealTypes,
-                  onPressed: (int index) {
-                    setState(() {
-                      for (int i = 0; i < mealSelections.length; i++) {
-                        mealSelections[i] = (i == index);
-                      }
-
-                      if (index == 0) {
-                        setState(() {
-                          currentMenu = MealType.breakfast;
-                        });
-                      } else if (index == 1) {
-                        setState(() {
-                          currentMenu = MealType.lunch;
-                        });
-                      } else if (index == 2) {
-                        setState(() {
-                          currentMenu = MealType.dinner;
-                        });
-                      }
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          displayMenu(),
-          Row(
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.white,
+    appBar: createAppBar(context),
+    drawer: createDrawer(context, widget.username),
+    body: Column(
+      children: [
+        createUsernameSection(widget.username),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(width: 90),
-              createBackWidget(context),
-              const SizedBox(width: 90),
-              createImage('assets/images/CareMateLogo.png', 75, 70)
+              ToggleButtons(
+                isSelected: mealSelections,
+                borderRadius: BorderRadius.circular(12),
+                selectedBorderColor: Colors.red[900],
+                borderWidth: 7,
+                color: Colors.red,
+                selectedColor: Colors.white,
+                fillColor: Colors.red,
+                constraints: const BoxConstraints(
+                  minHeight: 100,
+                  minWidth: 100,
+                ),
+                children: mealTypes,
+                onPressed: (int index) {
+                  setState(() {
+                    for (int i = 0; i < mealSelections.length; i++) {
+                      mealSelections[i] = (i == index);
+                    }
+
+                    if (index == 0) {
+                      currentMenu = MealType.breakfast;
+                    } else if (index == 1) {
+                      currentMenu = MealType.lunch;
+                    } else if (index == 2) {
+                      currentMenu = MealType.dinner;
+                    }
+                  });
+                },
+              ),
             ],
           ),
-        ],
-      ),
-    );
+        ),
+        Expanded(
+          child: displayMenu(), 
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 90),
+            createBackWidget(context),
+            const SizedBox(width: 90),
+            createImage('assets/images/CareMateLogo.png', 75, 70)
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+  Widget displayMenu() {
+  return FutureBuilder<Column>(
+    future: createMenu(), 
+    builder: (BuildContext context, AsyncSnapshot<Column> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text("Error: ${snapshot.error}"));
+      } else if (snapshot.hasData) {
+        return snapshot.data!;
+      } else {
+        return const Center(child: Text("No menu available"));
+      }
+    },
+  );
+}
+
+  Future<Column> createMenu() async {
+  switch (currentMenu) {
+    case MealType.breakfast:
+      return createBreakfastMenu();
+    case MealType.lunch:
+      return createLunchMenu();
+    case MealType.dinner:
+      return createDinnerMenu();
+    default:
+      return const Column(
+        children: [Text('No menu selected')],
+      );
   }
+}
 
   ElevatedButton createMealTypeButton(
       String text, VoidCallback onPressed, double width, double height) {
@@ -124,67 +157,65 @@ class MealScreenState extends State<MealScreen> {
     );
   }
 
-  Column displayMenu() {
-    if (currentMenu == MealType.breakfast) {
-      return createBreakfastMenu();
-    } else if (currentMenu == MealType.lunch) {
-      return createLunchMenu();
-    } else {
-      return createDinnerMenu();
-    }
-  }
+  Future<Column> createBreakfastMenu() async {
+    Meal meal = await _mealController.getAllCombos(MealType.breakfast);
+    List<Combo> combos = meal.getCombos();
 
-  Column createBreakfastMenu() {
     return Column(
       children: [
-        createMeal('Breakfast Burrito',
-            'assets/images/breakfast_burrito_meal.jpg', 100, 100, 150),
+        createMeal(combos[0], 'assets/images/breakfast_burrito_meal.jpg', 100, 100, 150),
         const SizedBox(height: 10),
-        createMeal('French toast with Berries',
+        createMeal(combos[1],
             'assets/images/french_toast_meal.jpg', 100, 100, 150),
         const SizedBox(height: 10),
-        createMeal('Omelette & Potatoes', 'assets/images/omelette_meal.jpg',
+        createMeal(combos[2], 'assets/images/omelette_meal.jpg',
             100, 100, 150),
         const SizedBox(height: 10),
         createMeal(
-            'Pancake platter', 'assets/images/pancakes_meal.png', 100, 100, 150)
+            combos[3], 'assets/images/pancakes_meal.png', 100, 100, 150)
       ],
     );
   }
 
-  Column createLunchMenu() {
+  Future<Column> createLunchMenu() async {
+    Meal meal = await _mealController.getAllCombos(MealType.lunch);
+    List<Combo> combos = meal.getCombos();
+
     return Column(
       children: [
-        createMeal('Chicken Fillet Meal', 'assets/images/fillet_meal.jpeg', 100,
+        createMeal(combos[0], 'assets/images/fillet_meal.jpeg', 100,
             100, 150),
         const SizedBox(height: 12),
-        createMeal('Pizza', 'assets/images/pizza_meal.jpg', 100, 100, 150),
+        createMeal(combos[1], 'assets/images/pizza_meal.jpg', 100, 100, 150),
         const SizedBox(height: 12),
         createMeal(
-            'Sandwich Meal', 'assets/images/sub_meal.JPG', 100, 100, 150),
+            combos[2], 'assets/images/sub_meal.JPG', 100, 100, 150),
         const SizedBox(height: 12),
-        createMeal('Pasta', 'assets/images/pasta_meal.jpg', 100, 100, 150)
+        createMeal(combos[3], 'assets/images/pasta_meal.jpg', 100, 100, 150)
       ],
     );
   }
 
-  Column createDinnerMenu() {
+  Future<Column> createDinnerMenu() async {
+    Meal meal = await _mealController.getAllCombos(MealType.dinner);
+    List<Combo> combos = meal.getCombos();
+
     return Column(
       children: [
-        createMeal('Salmon, rice, and broccoli',
+        createMeal(combos[0],
             'assets/images/salmon_meal.jpg', 100, 100, 150),
         const SizedBox(height: 10),
-        createMeal('Shrimp Spaghetti', 'assets/images/shrimp_spaghetti.jpg',
+        createMeal(combos[1], 'assets/images/shrimp_spaghetti.jpg',
             100, 100, 150),
-        createMeal('Steak & Mashed Potatoes', 'assets/images/steak_meal.jpeg',
+        createMeal(combos[2], 'assets/images/steak_meal.jpeg',
             100, 100, 150),
         createMeal(
-            'Chicken Tacos', 'assets/images/taco_meal.jpg', 100, 100, 150),
+            combos[3], 'assets/images/taco_meal.jpg', 100, 100, 150),
       ],
     );
   }
 
-  Row createMeal(String mealName, String path, double imageWidth,
+    Row createMeal(Combo combo, String path, double imageWidth,
       double imageHeight, double textBoxWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +232,7 @@ class MealScreenState extends State<MealScreen> {
                 width: textBoxWidth,
                 child: Text(
                   textAlign: TextAlign.center,
-                  mealName,
+                  combo.name,
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -209,7 +240,46 @@ class MealScreenState extends State<MealScreen> {
                 ),
               ),
               const SizedBox(height: 0),
-              createButton('Order', () {}, 100)
+              createButton('Order', 
+              () async {
+                  var response = await _mealController.placeOrder(currentMenu, combo.id);
+                  log(response);
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Order Status'),
+                        content: const Text(
+                                  'Successfully ordered!',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold, 
+                                    color: Colors.red,           
+                                    fontSize: 18,                
+                                  ),
+                        ),
+                        actions: [
+                          TextButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop(); 
+                            },
+                            child: const Text(
+                              'OK',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+               100)
             ],
           ),
         ),
@@ -255,4 +325,19 @@ class MealScreenState extends State<MealScreen> {
       ],
     );
   }
+
+  ElevatedButton createButton(String text, VoidCallback onPressed, double width_size) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+        fixedSize: Size.fromWidth(width_size),
+        backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7))),
+    child: Text(
+      text,
+      style: const TextStyle(color: Colors.white),
+      textAlign: TextAlign.center,
+    ),
+  );
+}
 }
